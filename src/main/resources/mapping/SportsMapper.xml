@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ssm.dao.SportsDao">
+    <resultMap id="resultMap" type="ssm.model.Sports">
+        <id property="spo_id" column="spo_id"/>
+        <result property="spo_name" column="spo_name"/>
+        <result property="spo_property" column="spo_property"/>
+        <result property="gender" column="gender"/>
+        <result property="spo_type" column="spo_type"/>
+        <result property="scoreUnit" column="scoreUnit"/>
+        <result property="sort" column="sort"/>
+        <result property="place" column="place"/>
+        <result property="startTime" column="startTime"/>
+        <result property="endTime" column="endTime"/>
+        <result property="takenum" column="takenum"/>
+    </resultMap>
+    <!--SQL片段-->
+    <sql id="selectSportsListWhere">
+            <where>
+                <if test="spo_name!=null">
+                    spo_name like "%"#{spo_name}"%"
+                </if>
+                <if test="spo_property!=null">
+                    and spo_property = #{spo_property}
+                </if>
+                <if test="spo_type!=null">
+                    and spo_type = #{spo_type}
+                </if>
+                <if test="gender!=null">
+                    and gender = #{gender}
+                </if>
+            </where>
+    </sql>
+    <!-- 查询客户列表  -->
+    <select id="selectSportsList" parameterType="sports"
+            resultType="sports">
+        SELECT *
+        FROM
+        tb_sports
+        <include refid="selectSportsListWhere"/>
+        <!-- 执行分页查询 -->
+        <if test="start !=null and rows != null">
+            limit #{start},#{rows}
+        </if>
+    </select>
+    <!-- 查询客户总数 -->
+    <select id="selectSportsListCount" parameterType="sports"
+            resultType="Integer">
+        select count(*) from tb_sports
+        <include refid="selectSportsListWhere"/>
+    </select>
+
+    <!-- 添加客户 -->
+    <insert id="createSports" parameterType="sports">
+        insert into tb_sports(
+        spo_name,
+        spo_property,
+        gender,
+        spo_type,
+        scoreUnit,
+        sort,
+        place,
+        startTime,
+        endTime,
+        takenum
+        )
+        values(#{spo_name},
+        #{spo_property},
+        #{gender},
+        #{spo_type},
+        #{scoreUnit},
+        #{sort},
+        #{place},
+        #{startTime},
+        #{endTime},
+        #{takenum}
+        )
+    </insert>
+    <!-- 查询所有比赛项目的名称 -->
+    <select id="getAllSports"
+            resultType="sports">
+        select * from tb_sports
+    </select>
+    <!-- 根据id获取比赛项目信息 -->
+    <select id="getSportsById" parameterType="Integer"
+            resultType="sports">
+        select * from tb_sports where spo_id = #{id}
+    </select>
+    <!-- 更新比赛项目信息 -->
+    <update id="updateSports" parameterType="sports">
+        update tb_sports
+        <set>
+            <if test="spo_name!=null">
+                spo_name=#{eidt_name},
+            </if>
+            <if test="spo_property!=null">
+                spo_property=#{edit_property},
+            </if>
+            <if test="gender!=null">
+                gender=#{edit_gender},
+            </if>
+            <if test="spo_type!=null">
+                spo_type=#{edit_type},
+            </if>
+            <if test="scoreUnit!=null">
+                scoreUnit=#{edit_scoreUnit},
+            </if>
+            <if test="sort!=null">
+                sort=#{edit_sort},
+            </if>
+            <if test="place!=null">
+                place=#{edit_place},
+            </if>
+            <if test="startTime!=null">
+                startTime=#{edit_startTime},
+            </if>
+            <if test="endTime!=null">
+                endTime=#{edit_endTime},
+            </if>
+            <if test="takenum!=null">
+                takenum=#{edit_takenum},
+            </if>
+        </set>
+        where spo_id=#{cust_id}
+    </update>
+    <!-- 删除客户 -->
+    <delete id="deleteSports" parameterType="Integer">
+        delete from tb_sports where spo_id=#{spo_id}
+    </delete>
+</mapper>
